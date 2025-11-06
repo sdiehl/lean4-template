@@ -97,10 +97,6 @@ lake build MyProject:docs
 
 The documentation will be generated in `docbuild/.lake/build/doc/`.
 
-### Viewing Documentation
-
-Due to browser security policies (Same Origin Policy), the generated HTML files cannot be opened directly from the file system. You need to serve them using a local HTTP server:
-
 ```bash
 # Navigate to the generated documentation directory
 cd docbuild/.lake/build/doc
@@ -109,28 +105,6 @@ cd docbuild/.lake/build/doc
 python3 -m http.server
 
 # The documentation will be available at http://localhost:8000
-```
-
-Alternatively, you can use any other HTTP server like `npx serve` or `ruby -run -ehttpd`.
-
-### Documentation Features
-
-The generated documentation includes:
-
-- Complete API documentation for all modules
-- Type signatures and definitions
-- Theorem statements and proofs
-- Cross-references and search functionality
-- Source code links
-- Module dependency graphs
-
-### Updating Documentation
-
-When you make changes to your code, regenerate the documentation:
-
-```bash
-cd docbuild
-lake build MyProject:docs
 ```
 
 ### Alternative: Direct Integration
@@ -150,8 +124,6 @@ Then build with:
 lake -Kenv=dev update doc-gen4
 lake -Kenv=dev build MyProject:docs
 ```
-
-Note: The documentation generator also includes standard library documentation (Lean, Init, Lake, Std) in addition to your project modules.
 
 ## LLM Integration
 
