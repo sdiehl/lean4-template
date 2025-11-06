@@ -76,6 +76,83 @@ lake test
 lake lint
 ```
 
+## Documentation
+
+This project uses [doc-gen4](https://github.com/leanprover/doc-gen4) to generate API documentation for all Lean modules.
+
+### Building Documentation
+
+The documentation is built using a nested project approach for compatibility:
+
+```bash
+# Navigate to the documentation build directory
+cd docbuild
+
+# Update dependencies (first time only)
+lake update
+
+# Build the documentation
+lake build MyProject:docs
+```
+
+The documentation will be generated in `docbuild/.lake/build/doc/`.
+
+### Viewing Documentation
+
+Due to browser security policies (Same Origin Policy), the generated HTML files cannot be opened directly from the file system. You need to serve them using a local HTTP server:
+
+```bash
+# Navigate to the generated documentation directory
+cd docbuild/.lake/build/doc
+
+# Serve the documentation using Python's built-in server
+python3 -m http.server
+
+# The documentation will be available at http://localhost:8000
+```
+
+Alternatively, you can use any other HTTP server like `npx serve` or `ruby -run -ehttpd`.
+
+### Documentation Features
+
+The generated documentation includes:
+
+- Complete API documentation for all modules
+- Type signatures and definitions
+- Theorem statements and proofs
+- Cross-references and search functionality
+- Source code links
+- Module dependency graphs
+
+### Updating Documentation
+
+When you make changes to your code, regenerate the documentation:
+
+```bash
+cd docbuild
+lake build MyProject:docs
+```
+
+### Alternative: Direct Integration
+
+You can also integrate doc-gen4 directly into your main `lakefile.lean`:
+
+```lean
+-- Add to lakefile.lean
+meta if get_config? env = some "dev" then
+  require «doc-gen4» from git
+    "https://github.com/leanprover/doc-gen4" @ "31cc380"
+```
+
+Then build with:
+
+```bash
+lake -Kenv=dev update doc-gen4
+lake -Kenv=dev build MyProject:docs
+```
+
+Note: The documentation generator also includes standard library documentation (Lean, Init, Lake, Std) in addition to your project modules.
+
 ## LLM Integration
 
 Install [lean-lsp-mcp](https://github.com/oOo0oOo/lean-lsp-mcp).
