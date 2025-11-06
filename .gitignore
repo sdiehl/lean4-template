@@ -9,3 +9,6 @@ build.log
 # Documentation build
 docbuild/.lake/
 docbuild/lake-manifest.json
+
+.claude
+.codex

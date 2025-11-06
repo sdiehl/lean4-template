@@ -127,7 +127,7 @@ lake -Kenv=dev build MyProject:docs
 
 ## LLM Integration
 
-Install [lean-lsp-mcp](https://github.com/oOo0oOo/lean-lsp-mcp).
+Install [lean-lsp-mcp](https://github.com/oOo0oOo/lean-lsp-mcp), requires [uv](https://docs.astral.sh/uv/).
 
 Then add the Lean 4 Skills plugin and install desired skills:
 
