@@ -24,4 +24,3 @@ jobs:
           lint: true
           use-github-cache: true
           use-mathlib-cache: true
-          lake-package-directory: "src"
