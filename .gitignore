@@ -1,0 +1,7 @@
+.DS_Store
+target/
+.lake
+*.json
+*.olean
+lake-packages
+build.log
