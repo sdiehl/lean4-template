@@ -16,8 +16,8 @@ A well-structured starting template for Lean 4 projects with Mathlib support.
 1. **Clone or copy this template:**
 
    ```bash
-   cp -r lean-template my-new-project
-   cd my-new-project
+   git clone git@github.com:sdiehl/lean4-template.git
+   cd lean4-template
    ```
 
 2. **Update project name:**
@@ -78,58 +78,30 @@ lake lint
 
 ## Documentation
 
-This project uses [doc-gen4](https://github.com/leanprover/doc-gen4) to generate API documentation for all Lean modules.
+This project includes an integrated documentation generator using [doc-gen4](https://github.com/leanprover/doc-gen4) for all Lean modules.
 
 ### Building Documentation
 
-The documentation is built using a nested project approach for compatibility:
+Simply run:
 
 ```bash
-# Navigate to the documentation build directory
-cd docbuild
-
-# Update dependencies (first time only)
-lake update
-
-# Build the documentation
-lake build MyProject:docs
+lake script run docs
 ```
 
-The documentation will be generated in `docbuild/.lake/build/doc/`.
+After building, serve the documentation locally:
 
 ```bash
-# Navigate to the generated documentation directory
 cd docbuild/.lake/build/doc
 
 # Serve the documentation using Python's built-in server
 python3 -m http.server
-
-# The documentation will be available at http://localhost:8000
-```
-
-### Alternative: Direct Integration
-
-You can also integrate doc-gen4 directly into your main `lakefile.lean`:
-
-```lean
--- Add to lakefile.lean
-meta if get_config? env = some "dev" then
-  require «doc-gen4» from git
-    "https://github.com/leanprover/doc-gen4" @ "31cc380"
-```
-
-Then build with:
-
-```bash
-lake -Kenv=dev update doc-gen4
-lake -Kenv=dev build MyProject:docs
 ```
 
 ## LLM Integration
 
 Install [lean-lsp-mcp](https://github.com/oOo0oOo/lean-lsp-mcp), requires [uv](https://docs.astral.sh/uv/).
 
-Then add the Lean 4 Skills plugin and install desired skills:
+Then add the [Lean 4 Skills plugin](https://github.com/cameronfreer/lean4-skills) and install desired skills:
 
 ```bash
 /plugin marketplace add cameronfreer/lean4-skills

@@ -16,6 +16,7 @@ require mathlib from git
 require batteries from git
   "https://github.com/leanprover-community/batteries" @ "v4.24.0"
 
+
 -- Main library
 @[default_target]
 lean_lib MyProject where
@@ -143,3 +144,64 @@ script lint do
     IO.println "FAIL: Some lint checks failed"
 
   return exitCode.toUInt32
+
+-- Documentation builder script
+script docs do
+  IO.println "Building documentation..."
+
+  -- Create docbuild directory if it doesn't exist
+  let docbuildPath : System.FilePath := ⟨"docbuild"⟩
+  if !(← docbuildPath.pathExists) then
+    IO.FS.createDir docbuildPath
+
+  -- Create lakefile.lean for docbuild
+  let lakefilePath := docbuildPath / "lakefile.lean"
+  let lakefileContent := "import Lake
+open Lake DSL
+
+package «docbuild»
+
+require «MyProject» from \"..\"
+
+require «doc-gen4» from git
+  \"https://github.com/leanprover/doc-gen4\" @ \"31cc380\"
+"
+  IO.FS.writeFile lakefilePath lakefileContent
+
+  -- Copy lean-toolchain
+  let toolchainSrc : System.FilePath := ⟨"lean-toolchain"⟩
+  let toolchainDst := docbuildPath / "lean-toolchain"
+  if ← toolchainSrc.pathExists then
+    let content ← IO.FS.readFile toolchainSrc
+    IO.FS.writeFile toolchainDst content
+
+  -- Run lake update in docbuild
+  IO.println "Updating dependencies..."
+  let updateProc ← IO.Process.spawn {
+    cmd := "lake"
+    args := #["update"]
+    cwd := docbuildPath
+    env := #[("MATHLIB_NO_CACHE_ON_UPDATE", "1")]
+  }
+  let updateExitCode ← updateProc.wait
+  if updateExitCode ≠ 0 then
+    IO.println "Error: Failed to update dependencies"
+    return 1
+
+  -- Build documentation
+  IO.println "Generating documentation..."
+  let buildProc ← IO.Process.spawn {
+    cmd := "lake"
+    args := #["build", "MyProject:docs"]
+    cwd := docbuildPath
+  }
+  let buildExitCode ← buildProc.wait
+  if buildExitCode ≠ 0 then
+    IO.println "Error: Failed to build documentation"
+    return 1
+
+  IO.println "Documentation generated successfully!"
+  IO.println "View docs at: docbuild/.lake/build/doc/"
+  IO.println "To serve locally, run:"
+  IO.println "  cd docbuild/.lake/build/doc && python3 -m http.server"
+  return 0
