@@ -3,12 +3,6 @@ import MyProject.Types
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.FieldSimp
 
-/-!
-# Algebraic Theorems
-
-Theorems about algebraic properties of the types and operations.
--/
-
 namespace MyProject.Thm
 
 -- Since Qty is Rat, we can prove field properties
